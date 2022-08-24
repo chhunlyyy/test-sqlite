@@ -7,6 +7,10 @@ class SqLiteHelper {
     return join(databasesPath, dbName);
   }
 
+  Future<Database> openDb(String path) async {
+    return await openDatabase(path).then((database) => database);
+  }
+
   Future<Database> createTable(String path, String rawQuery) async {
     return await openDatabase(path, version: 1, onCreate: (Database db, int version) async {
       await db.execute(rawQuery);

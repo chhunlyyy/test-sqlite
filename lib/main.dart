@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:test_sqlite/sqlite_helper.dart';
 
 void main() {
@@ -36,7 +35,7 @@ class _MyAppState extends State<MyApp> {
       try {
         String path = await sqLiteHelper.getPath(dbName);
 
-        await openDatabase(path).then((db) async {
+        await sqLiteHelper.openDb(path).then((db) async {
           await sqLiteHelper.getRecord(db, getValueQuery).then((value) {
             print(value);
             sqLiteHelper.closeDatabase(db);
