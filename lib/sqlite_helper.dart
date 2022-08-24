@@ -23,6 +23,10 @@ class SqLiteHelper {
     return await db.rawQuery(getRecordQuery);
   }
 
+  Future<void> updateRecord(Database db, String updateRawQuery) async {
+    await db.rawUpdate(updateRawQuery);
+  }
+
   Future<void> deleteRecord(Database db, String deleteRawQuery) async {
     await db.delete(deleteRawQuery);
   }
