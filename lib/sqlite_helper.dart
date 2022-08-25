@@ -11,31 +11,41 @@ class SqLiteHelper {
     return await openDatabase(path).then((database) => database);
   }
 
-  Future<Database> createTable(String path, String rawQuery) async {
-    return await openDatabase(path, version: 1, onCreate: (Database db, int version) async {
+  Future<void> createTable(String path, String rawQuery) async {
+    await openDatabase(path, version: 1, onCreate: (Database db, int version) async {
       await db.execute(rawQuery);
     });
   }
 
-  Future<void> insertRecord(Database db, String rawInsertQuery) async {
-    await db.transaction((txn) async {
-      await txn.rawInsert(rawInsertQuery);
+  Future<void> insertRecord(String path, String rawInsertQuery) async {
+    await openDb(path).then((db) async {
+      await db.transaction((txn) async {
+        await txn.rawInsert(rawInsertQuery);
+      });
     });
   }
 
-  Future<List<Map>> getRecord(Database db, String getRecordQuery) async {
-    return await db.rawQuery(getRecordQuery);
+  Future<List<Map>> getRecord(String path, String getRecordQuery) async {
+    return await openDb(path).then((db) async {
+      return await db.rawQuery(getRecordQuery);
+    });
   }
 
-  Future<void> updateRecord(Database db, String updateRawQuery) async {
-    await db.rawUpdate(updateRawQuery);
+  Future<void> updateRecord(String path, String updateRawQuery) async {
+    await openDb(path).then((db) async {
+      await db.rawUpdate(updateRawQuery);
+    });
   }
 
-  Future<void> deleteRecord(Database db, String deleteRawQuery) async {
-    await db.delete(deleteRawQuery);
+  Future<void> deleteRecord(String path, String deleteRawQuery) async {
+    await openDb(path).then((db) async {
+      await db.delete(deleteRawQuery);
+    });
   }
 
-  Future<void> closeDatabase(Database db) async {
-    await db.close();
+  Future<void> closeDatabase(String path) async {
+    await openDb(path).then((db) async {
+      await db.close();
+    });
   }
 }

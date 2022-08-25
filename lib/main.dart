@@ -21,10 +21,11 @@ class _MyAppState extends State<MyApp> {
     const String getValueQuery = 'SELECT * FROM Test';
 
     Future.delayed(Duration.zero, () async {
+      String path = await sqLiteHelper.getPath(dbName);
       // insert data
       try {
-        await sqLiteHelper.createTable(dbName, creatTableQuery).then((db) async {
-          await sqLiteHelper.insertRecord(db, insertValueQuery);
+        await sqLiteHelper.createTable(dbName, creatTableQuery).whenComplete(() async {
+          await sqLiteHelper.insertRecord(path, insertValueQuery);
         });
       } catch (e) {
         print(e);
@@ -33,13 +34,9 @@ class _MyAppState extends State<MyApp> {
       // get data
 
       try {
-        String path = await sqLiteHelper.getPath(dbName);
-
-        await sqLiteHelper.openDb(path).then((db) async {
-          await sqLiteHelper.getRecord(db, getValueQuery).then((value) {
-            print(value);
-            sqLiteHelper.closeDatabase(db);
-          });
+        await sqLiteHelper.getRecord(path, getValueQuery).then((value) {
+          print(value);
+          // sqLiteHelper.closeDatabase();
         });
       } catch (e) {
         print(e);
